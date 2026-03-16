@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"fmt"
+
 	"github.com/Deepsayan-Das/chatter_GO/internal/services"
 	"github.com/gin-gonic/gin"
 )
@@ -46,6 +48,7 @@ func JoinRoom(ctx *gin.Context) {
 
 	err = services.JoinRoom(req.RoomID, userID)
 	if err != nil {
+		fmt.Println(err.Error())
 		ctx.JSON(500, gin.H{"error": "Error joining room"})
 		return
 	}

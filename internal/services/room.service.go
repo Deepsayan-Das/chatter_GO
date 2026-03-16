@@ -5,6 +5,7 @@ import (
 
 	"github.com/Deepsayan-Das/chatter_GO/internal/db"
 	"github.com/Deepsayan-Das/chatter_GO/internal/models"
+	"github.com/jackc/pgx/v5"
 )
 
 // CREATE TABLE rooms (
@@ -114,4 +115,33 @@ func FindRoomsByUserId(userId int) ([]models.Room, error) {
 	}
 
 	return rooms, nil
+}
+
+func IsUserInRoom(userID int, roomID int) (bool, error) {
+
+	query := `
+	SELECT 1
+	FROM room_members
+	WHERE user_id=$1 AND room_id=$2
+	`
+
+	var exists int
+
+	err := db.DB.QueryRow(
+		context.Background(),
+		query,
+		userID,
+		roomID,
+	).Scan(&exists)
+
+	if err != nil {
+
+		if err == pgx.ErrNoRows {
+			return false, nil
+		}
+
+		return false, err
+	}
+
+	return true, nil
 }

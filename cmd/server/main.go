@@ -41,6 +41,11 @@ func main() {
 	authRoutes.GET("/rooms/search", handlers.SearchRooms)
 	authRoutes.GET("/rooms/my", handlers.MyRooms)
 
+	authRoutes.POST("/messages", handlers.SendMessage)
+	authRoutes.GET("/rooms/:id/messages", handlers.GetMessages)
+	authRoutes.PATCH("/messages/:id", handlers.EditMessage)
+	authRoutes.DELETE("/messages/:id", handlers.DeleteMessage)
+
 	err = r.Run(fmt.Sprintf(":%s", os.Getenv("PORT")))
 	if err != nil {
 		log.Fatal("Error starting the server: ", err.Error())
