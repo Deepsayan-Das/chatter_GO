@@ -20,3 +20,10 @@ func HashPassword(password string) (string, error) {
 
 	return string(bytes), err
 }
+
+func ComparePassword(hashedPwd, plainPwd string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPwd), []byte(plainPwd))
+	//bcrypt.CompareHashAndPassword compares the hashed password with the plain password
+	// it returns nil if they match and an error if they don't match or if there is an issue with the hashed password
+	return err == nil
+}

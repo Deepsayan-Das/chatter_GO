@@ -30,6 +30,7 @@ func main() {
 		})
 	})
 	r.POST("/register", handlers.Register)
+	r.POST("/login", handlers.Login)
 
 	err = r.Run(fmt.Sprintf(":%s", os.Getenv("PORT")))
 	if err != nil {
