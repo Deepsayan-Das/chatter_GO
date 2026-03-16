@@ -8,7 +8,9 @@ import (
 	"github.com/Deepsayan-Das/chatter_GO/internal/db"
 	"github.com/Deepsayan-Das/chatter_GO/internal/handlers"
 	"github.com/Deepsayan-Das/chatter_GO/internal/middleware"
+	"github.com/Deepsayan-Das/chatter_GO/internal/websocket"
 	"github.com/gin-gonic/gin"
+
 	"github.com/joho/godotenv"
 )
 
@@ -24,11 +26,14 @@ func main() {
 	}
 	fmt.Println("DB connection established")
 	r := gin.Default()
-
+	hub := websocket.NewHub()
+	go hub.Run()
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{"message": "Chat backend running"})
 	})
-
+	r.GET("/ws", func(c *gin.Context) {
+		websocket.ServeWS(hub, c)
+	})
 	r.POST("/register", handlers.Register)
 	r.POST("/login", handlers.Login)
 
