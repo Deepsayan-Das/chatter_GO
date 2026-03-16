@@ -40,13 +40,17 @@ chatter_GO/
 │   │   ├── room.service.go
 │   │   ├── message.service.go
 │   │   └── dm.service.go
-│   ├── utils/                  # JWT generation and password helpers
+│   ├── utils/
+│   │   ├── hash.go             # bcrypt helpers
+│   │   ├── jwt.go              # JWT generation and validation
+│   │   └── utils_test.go       # Unit tests
 │   └── websocket/
 │       ├── hub.go              # Central client registry
 │       ├── manager.go          # Room-scoped connection management
 │       ├── client.go           # Per-connection read/write pumps
 │       ├── websocket.handler.go
-│       └── websockets.models.go
+│       ├── websockets.models.go
+│       └── websocket_test.go   # Unit tests
 ├── migrations/                 # SQL migration files
 ├── dockerfile
 ├── docker-compose.yml
@@ -84,6 +88,29 @@ docker-compose up --build
 ```
 
 This starts both the PostgreSQL database and the backend server. Apply database migrations manually after the containers are running.
+
+> **Note:** The Dockerfile uses a multi-stage build. The binary is compiled in a `golang:1.22-alpine` builder stage and copied into a minimal `alpine:3.19` runtime image, producing a final image of approximately 10 MB.
+
+## Testing
+
+The following packages have unit test coverage:
+
+| Package              | Coverage                                           |
+|----------------------|----------------------------------------------------|
+| `internal/utils`     | JWT generation, token validation, password hashing |
+| `internal/websocket` | Manager join/leave/broadcast, Hub initialization   |
+
+Run all tests:
+
+```bash
+go test ./...
+```
+
+Run with verbose output:
+
+```bash
+go test ./internal/utils/... ./internal/websocket/... -v
+```
 
 ## REST API Reference
 
